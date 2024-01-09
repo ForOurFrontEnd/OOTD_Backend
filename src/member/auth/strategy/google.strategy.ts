@@ -1,13 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import { Strategy, VerifyCallback, Profile } from "passport-google-oauth20";
-import { SocialBuyer } from "src/member/buyer/entity/socialbuyer.entity";
-import { BuyerService } from "src/member/buyer/buyer.service";
+import { UserService } from "src/member/user/user.service";
 import { sign } from "jsonwebtoken";
+import { User } from 'src/member/user/entity/user.entity';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
-  constructor(private buyerService: BuyerService) {
+  constructor(private userService: UserService) {
     super({
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -35,14 +35,17 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
     const email = emails[0].value;
     const photo = photos[0].value;
     const name = displayName;
+    const isAutoLogin = true;
+
     try {
-      const user: SocialBuyer = await this.buyerService.findByEmailOrSave(
+      const user: User = await this.userService.findByEmailOrSave(
         email,
         photo,
-        name
+        name,
+        isAutoLogin
       );
 
-      const payload = { user: { email: user.email }, type: "socialBuyer" };
+      const payload = { user: { email: user.email }, type: "buyer" };
       done(null, payload);
     } catch (error) {
       done(error, false);

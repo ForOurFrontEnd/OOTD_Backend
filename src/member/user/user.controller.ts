@@ -10,32 +10,28 @@ import {
   Put,
   Req,
   Res,
-  UploadedFile,
   UseGuards,
-  UseInterceptors,
 } from "@nestjs/common";
 import { sign } from "jsonwebtoken";
 import { AuthGuard } from "@nestjs/passport";
-import { BuyerService } from "./buyer.service";
+import { UserService } from "./user.service";
 import { LoginUserDto } from "../auth/dto/loginuser.dto";
 import { CreateUserDto } from "../auth/dto/createuser.dto";
-import { UpdateUserDto } from "../auth/dto/updateuser.dto";
-import { FileInterceptor } from "@nestjs/platform-express";
 
-@Controller("buyer")
-export class BuyerController {
+@Controller()
+export class UserController {
   private generateAccessToken(user: any): string {
     const secretKey = process.env.ACCESS_TOKEN_PRIVATE_KEY;
     const expiresIn = "24h";
     const accessToken = sign({ user }, secretKey, { expiresIn });
     return accessToken;
   }
-  constructor(private readonly buyerService: BuyerService) {}
+  constructor(private readonly userService: UserService) {}
 
   @Post("login")
   async logIn(@Body() dto: LoginUserDto, @Res() res) {
     try {
-      const accessToken = await this.buyerService.handleLogin(dto);
+      const accessToken = await this.userService.handleLogin(dto);
       res.cookie("Authorization", accessToken, {
         httpOnly: false,
         secure: true,
@@ -91,34 +87,22 @@ export class BuyerController {
 
   @Post("signup")
   async createUser(@Body() dto: CreateUserDto, @Res() res) {
-    const result = await this.buyerService.signUp(dto);
+    const result = await this.userService.signUp(dto);
     res.send(result);
   }
 
-  @Put("update")
-  @UseInterceptors(FileInterceptor("photo"))
-  async updateUser(
-    @Req() req,
-    @Res() res,
-    @UploadedFile() photo,
-    @Body() dto: UpdateUserDto
-  ) {
-    const token = req.cookies.Authorization;
-    const result = await this.buyerService.update(token, dto, photo);
-    res.send(result);
-  }
+  // @Put('update')
+  // async updateUser(@Req() req, @Res() res){
+  //   const token = req.cookies.Authorization;
+  //   const result = await this.userService.update(token);
+  // }
 
   @Delete("withdrawal")
   async withdrawalUser(@Req() req, @Res() res) {
     const token = req.cookies.Authorization;
-    const result = await this.buyerService.withdrawal(token);
-    res.send(result);
-  }
+    console.log(token);
 
-  @Get()
-  async getBuyer(@Req() req, @Res() res) {
-    const token = req.cookies.Authorization;
-    const buyer = await this.buyerService.getBuyer(token);
-    res.send(buyer);
+    const result = await this.userService.withdrawal(token);
+    res.send(result);
   }
 }
