@@ -35,14 +35,14 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
     const isAutoLogin = true;
 
     try {
-      const user: User = await this.userService.findByEmailOrSave(
+      const user: User = await this.userService.findByGoogleEmailOrSave(
         email,
         photo,
         name,
         isAutoLogin
       );
 
-      const payload = { user: { email: user.email }};
+      const payload = { email: user.email, photo: user.photo, isLogined: true, loginPlatform: 'google' };
       done(null, payload);
     } catch (error) {
       done(error, false);

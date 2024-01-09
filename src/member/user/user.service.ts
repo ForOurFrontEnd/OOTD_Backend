@@ -75,7 +75,7 @@ export class UserService {
     return accesstoken;
   }
 
-  private generateAccessToken(user: any): string {
+  async generateAccessToken(user: any): Promise<string> {
     const secretKey = process.env.ACCESS_TOKEN_PRIVATE_KEY;
     const expiresIn = "24h";
     const accessToken = sign({ user }, secretKey, { expiresIn });
@@ -83,7 +83,7 @@ export class UserService {
   }
 
   async findByEmailOrSave(email, photo, name, isAutoLogin): Promise<User> {
-    const isUser = await this.getUser(email);
+    const isUser = await this.getOOTDUser(email);
     if (!isUser) {
       const newUser = await this.userRepository.save({
         email,
@@ -96,72 +96,60 @@ export class UserService {
     return isUser;
   }
 
-  async getUser(email: string): Promise<User> {
+  async findByKakaoEmailOrSave(email, photo, name, isAutoLogin): Promise<User> {
+    const isUser = await this.getKaKaoAutoLoginUser(email);
+    if (!isUser) {
+      const newUser = await this.userRepository.save({
+        email,
+        kakao_email:email,
+        photo,
+        name,
+        isAutoLogin
+      });
+      return newUser;
+    }
+    return isUser;
+  }
+
+  async  findByGoogleEmailOrSave(email, photo, name, isAutoLogin): Promise<User> {
+    const isUser = await this.getGoogleAutoLoginUser(email);
+    if (!isUser) {
+      const newUser = await this.userRepository.save({
+        email,
+        google_email:email,
+        photo,
+        name,
+        isAutoLogin
+      });
+      return newUser;
+    }
+    return isUser;
+  }
+
+  async getOOTDUser(email: string): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { email: email },
     });
     return user;
   }
 
-  // async update(token){
-  //   const decodeToken = await this.decodeToken(token);
-  //   const { user, type } = decodeToken;
+  async getKaKaoAutoLoginUser(email: string): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { kakao_email: email },
+    });
+    return user;
+  }
 
-  //   const localUser = await this.userRepository.findOne({
-  //     where: { email: user.email },
-  //   });
-  //   if(!localUser) {
-  //     const socialUser = await this.userRepository.findOne({
-  //       where: { email: user.email },
-  //     });
-  //     if(!socialUser) return '잘못된 사용자 정보입니다.'
-  //   }
-  //   const updateUser = await this.userRepository.update()
-  // }
+  async getGoogleAutoLoginUser(email: string): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { google_email: email },
+    });
+    return user;
+  }
 
-  // async withdrawal(token) {
-  //   const decodeToken = await this.decodeToken(token);
-  //   const { user, type } = decodeToken;
-
-  //   const localUser = await this.userRepository.findOne({
-  //     where: { email: user.email },
-  //   });
-
-  //   if (localUser) {
-  //     const deleteResult = await this.userRepository.delete({
-  //       id: localUser.id,
-  //     });
-  //     if (deleteResult.affected === 1) {
-  //       return "삭제 성공!";
-  //     } else {
-  //       return "삭제 실패";
-  //     }
-  //   } else {
-  //     const socialUser = await this.userRepository.findOne({
-  //       where: { email: user.email },
-  //     });
-  //     if (socialUser) {
-  //       const deleteResult = await this.userRepository.delete({
-  //         id: socialUser.id,
-  //       });
-  //       if (deleteResult.affected === 1) {
-  //         return "삭제 성공!";
-  //       } else {
-  //         return "삭제 실패";
-  //       }
-  //     } else {
-  //       return "잘못된 유저 정보 입니다.";
-  //     }
-  //   }
-  // }
-
-  async decodeToken(token) {
+  async decodeToken(token: string) {
     try {
-      const verifiedToken = token.split(" ")[1];
-      const decodeToken = verify(
-        verifiedToken,
-        process.env.ACCESS_TOKEN_PRIVATE_KEY
-      );
+      const decodeToken = verify(token,process.env.ACCESS_TOKEN_PRIVATE_KEY)
       return decodeToken;
     } catch (e) {
       console.error("decodeToken Error:", e);

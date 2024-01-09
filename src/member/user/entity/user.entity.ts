@@ -2,8 +2,6 @@ import {
   BaseEntity,
   Column,
   Entity,
-  OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
 
@@ -16,10 +14,16 @@ export class User extends BaseEntity {
   email: string;
 
   @Column({ nullable: true })
-  name: string;
+  password: string;
 
   @Column({ nullable: true })
-  password: string;
+  kakao_email: string;
+
+  @Column({ nullable: true })
+  google_email: string;
+
+  @Column({ nullable: true })
+  name: string;
 
   @Column()
   photo: string;
