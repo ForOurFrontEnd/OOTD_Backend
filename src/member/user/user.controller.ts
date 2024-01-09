@@ -20,12 +20,6 @@ import { CreateUserDto } from "../auth/dto/createuser.dto";
 
 @Controller()
 export class UserController {
-  private generateAccessToken(user: any): string {
-    const secretKey = process.env.ACCESS_TOKEN_PRIVATE_KEY;
-    const expiresIn = "24h";
-    const accessToken = sign({ user }, secretKey, { expiresIn });
-    return accessToken;
-  }
   constructor(private readonly userService: UserService) {}
 
   @Post("login")
@@ -48,7 +42,7 @@ export class UserController {
   @UseGuards(AuthGuard("google"))
   async googleLoginCallback(@Req() req, @Res() res) {
     try {
-      const token = this.generateAccessToken(req.user);
+      const token = await this.userService.generateAccessToken(req.user);
       const accessToken = `Bearer ${token}`;
       res.cookie("Authorization", accessToken, {
         httpOnly: false,
@@ -66,7 +60,7 @@ export class UserController {
   @UseGuards(AuthGuard("kakao"))
   async kakaoLoginCallback(@Req() req, @Res() res) {
     try {
-      const token = this.generateAccessToken(req.user.user);
+      const token = await this.userService.generateAccessToken(req.user.user);
       const accessToken = `Bearer ${token}`;
       res.cookie("Authorization", accessToken, {
         httpOnly: false,
@@ -83,6 +77,7 @@ export class UserController {
   @Get("logout")
   async logout(@Res() res) {
     res.clearCookie("Authorization", { path: "/" });
+    res.redirect("http://localhost:3000");
   }
 
   @Post("signup")
@@ -91,18 +86,11 @@ export class UserController {
     res.send(result);
   }
 
-  // @Put('update')
-  // async updateUser(@Req() req, @Res() res){
-  //   const token = req.cookies.Authorization;
-  //   const result = await this.userService.update(token);
-  // }
-
-  // @Delete("withdrawal")
-  // async withdrawalUser(@Req() req, @Res() res) {
-  //   const token = req.cookies.Authorization;
-  //   console.log(token);
-
-  //   const result = await this.userService.withdrawal(token);
-  //   res.send(result);
-  // }
+  @Post('cookie')
+  async decodeCookie(@Headers('cookie') cookie: string, @Res() res): Promise<any> {
+    const token = cookie.split('Authorization=Bearer%20')[1];
+    const user = await this.userService.decodeToken(token);
+    console.log(user)
+    res.status(200).send(user)
+  }
 }

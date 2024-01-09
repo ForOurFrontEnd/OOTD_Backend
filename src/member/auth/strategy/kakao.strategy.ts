@@ -28,14 +28,14 @@ export class KakaoStrategy extends PassportStrategy(Strategy, "kakao") {
     const isAutoLogin = true
 
     try {
-      const user: User = await this.userService.findByEmailOrSave(
+      const user: User = await this.userService.findByKakaoEmailOrSave(
         email,
         photo,
         name,
         isAutoLogin
       );
 
-      const payload = { user: { email: user.email }};
+      const payload = { user: { email: user.email, photo: user.photo, isLogined: true, loginPlatform: 'kakao' }};
       done(null, payload);
     } catch (error) {
       done(error, false);
