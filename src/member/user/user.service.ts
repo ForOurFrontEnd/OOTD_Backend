@@ -119,41 +119,41 @@ export class UserService {
   //   const updateUser = await this.userRepository.update()
   // }
 
-  async withdrawal(token) {
-    const decodeToken = await this.decodeToken(token);
-    const { user, type } = decodeToken;
+  // async withdrawal(token) {
+  //   const decodeToken = await this.decodeToken(token);
+  //   const { user, type } = decodeToken;
 
-    const localUser = await this.userRepository.findOne({
-      where: { email: user.email },
-    });
+  //   const localUser = await this.userRepository.findOne({
+  //     where: { email: user.email },
+  //   });
 
-    if (localUser) {
-      const deleteResult = await this.userRepository.delete({
-        id: localUser.id,
-      });
-      if (deleteResult.affected === 1) {
-        return "삭제 성공!";
-      } else {
-        return "삭제 실패";
-      }
-    } else {
-      const socialUser = await this.userRepository.findOne({
-        where: { email: user.email },
-      });
-      if (socialUser) {
-        const deleteResult = await this.userRepository.delete({
-          id: socialUser.id,
-        });
-        if (deleteResult.affected === 1) {
-          return "삭제 성공!";
-        } else {
-          return "삭제 실패";
-        }
-      } else {
-        return "잘못된 유저 정보 입니다.";
-      }
-    }
-  }
+  //   if (localUser) {
+  //     const deleteResult = await this.userRepository.delete({
+  //       id: localUser.id,
+  //     });
+  //     if (deleteResult.affected === 1) {
+  //       return "삭제 성공!";
+  //     } else {
+  //       return "삭제 실패";
+  //     }
+  //   } else {
+  //     const socialUser = await this.userRepository.findOne({
+  //       where: { email: user.email },
+  //     });
+  //     if (socialUser) {
+  //       const deleteResult = await this.userRepository.delete({
+  //         id: socialUser.id,
+  //       });
+  //       if (deleteResult.affected === 1) {
+  //         return "삭제 성공!";
+  //       } else {
+  //         return "삭제 실패";
+  //       }
+  //     } else {
+  //       return "잘못된 유저 정보 입니다.";
+  //     }
+  //   }
+  // }
 
   async decodeToken(token) {
     try {

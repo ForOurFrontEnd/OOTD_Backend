@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import { Strategy, VerifyCallback, Profile } from "passport-google-oauth20";
 import { UserService } from "src/member/user/user.service";
-import { sign } from "jsonwebtoken";
 import { User } from 'src/member/user/entity/user.entity';
 
 @Injectable()
@@ -29,8 +28,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
     profile: Profile,
     done: VerifyCallback
   ): Promise<any> {
-    console.log(profile);
-
     const { emails, photos, displayName } = profile;
     const email = emails[0].value;
     const photo = photos[0].value;
@@ -45,7 +42,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
         isAutoLogin
       );
 
-      const payload = { user: { email: user.email }, type: "buyer" };
+      const payload = { user: { email: user.email }};
       done(null, payload);
     } catch (error) {
       done(error, false);
