@@ -97,12 +97,12 @@ export class UserController {
   //   const result = await this.userService.update(token);
   // }
 
-  @Delete("withdrawal")
-  async withdrawalUser(@Req() req, @Res() res) {
-    const token = req.cookies.Authorization;
-    console.log(token);
+  // @Delete("withdrawal")
+  // async withdrawalUser(@Req() req, @Res() res) {
+  //   const token = req.cookies.Authorization;
+  //   console.log(token);
 
-    const result = await this.userService.withdrawal(token);
-    res.send(result);
-  }
+  //   const result = await this.userService.withdrawal(token);
+  //   res.send(result);
+  // }
 }
