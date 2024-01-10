@@ -42,7 +42,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
         isAutoLogin
       );
 
-      const payload = { email: user.email, photo: user.photo, isLogined: true, loginPlatform: 'google' };
+      const payload = { email: user.email, photo: user.photo, name: user.name, isLogined: true, loginPlatform: 'google' };
       done(null, payload);
     } catch (error) {
       done(error, false);

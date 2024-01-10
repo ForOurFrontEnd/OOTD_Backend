@@ -88,9 +88,10 @@ export class UserController {
 
   @Post('cookie')
   async decodeCookie(@Headers('cookie') cookie: string, @Res() res): Promise<any> {
-    const token = cookie.split('Authorization=Bearer%20')[1];
-    const user = await this.userService.decodeToken(token);
-    console.log(user)
-    res.status(200).send(user)
+    if (cookie) {
+      const token = cookie.split('Authorization=Bearer%20')[1];
+      const user = await this.userService.decodeToken(token);
+      res.status(200).send(user)
+    }
   }
 }
