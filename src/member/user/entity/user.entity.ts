@@ -1,7 +1,16 @@
+import { Cart } from 'src/cart/entity/cart.entity';
+import { Item } from 'src/item/entity/item.entity';
+import { Like } from 'src/like/entity/like.entity';
+import { Order } from 'src/order/entity/order.entity';
+import { Review } from 'src/review/entity/review.entity';
+import { Seller } from 'src/seller/entity/seller.entity';
 import {
   BaseEntity,
   Column,
   Entity,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
 
@@ -36,6 +45,22 @@ export class User extends BaseEntity {
 
   @Column({ default: false })
   isAutoLogin: boolean;
+
+  @OneToMany(() => Cart, cart => cart.user)
+  carts: Cart[];
+
+  @OneToMany(() => Order, order => order.user)
+  orders: Order[];
+
+  @ManyToMany(() => Like, like => like.user)
+  likes: Like[];
+
+  @OneToMany(() => Review, review => review.user)
+  reviews: Review[];
+
+  @ManyToMany(() => Seller, seller => seller.users)
+  @JoinTable()
+  sellers: Seller[];
   
   @Column({ default: () => "CURRENT_TIMESTAMP" })
   createdAt: Date;

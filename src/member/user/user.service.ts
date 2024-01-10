@@ -149,7 +149,10 @@ export class UserService {
 
   async decodeToken(token: string) {
     try {
-      const decodeToken = verify(token,process.env.ACCESS_TOKEN_PRIVATE_KEY)
+      const decodeToken = verify(
+        token,
+        process.env.ACCESS_TOKEN_PRIVATE_KEY
+      )
       return decodeToken;
     } catch (e) {
       console.error("decodeToken Error:", e);
