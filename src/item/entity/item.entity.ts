@@ -3,35 +3,35 @@ import { User } from 'src/member/user/entity/user.entity';
 import { Order } from 'src/order/entity/order.entity';
 import { Review } from 'src/review/entity/review.entity';
 import { Seller } from 'src/seller/entity/seller.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, ManyToMany, JoinTable, Unique } from 'typeorm';
 
 @Entity()
 export class Item {
   @PrimaryGeneratedColumn()
   i_id: number;
 
-  @Column()
-  name: string;
-
-  @Column()
+  @Column({ nullable: false })
   brand: string;
 
-  @Column()
+  @Column({ nullable: false })
   title: string;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+  @Column({ nullable: false })
+  category: string;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 ,nullable: false})
   price: number;
 
-  @Column({ type: 'decimal', precision: 5, scale: 2, default: 0 })
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 ,nullable: true})
   discount: number;
 
-  @Column({ type: 'int', default: 0 })
+  @Column({ type: 'int', default: 0})
   point: number;
 
-  @Column({ type: 'text' })
-  image_url: string;
+  @Column({ type: 'text', nullable: false })
+  photo: string;
   
-  @Column()
+  @Column({ nullable: false })
   description: string;
 
   @ManyToOne(() => Seller, seller => seller.items)
