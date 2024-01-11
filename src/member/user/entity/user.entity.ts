@@ -34,7 +34,7 @@ export class User extends BaseEntity {
   @Column({ nullable: true })
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   photo: string;
   
   @Column({ nullable: true })
