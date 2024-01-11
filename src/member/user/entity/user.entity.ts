@@ -34,7 +34,7 @@ export class User extends BaseEntity {
   @Column({ nullable: true })
   name: string;
 
-  @Column({ nullable: true })
+  @Column({ default: '/images/profile/default_image.jpeg' })
   photo: string;
   
   @Column({ nullable: true })
