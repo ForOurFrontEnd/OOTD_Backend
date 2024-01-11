@@ -6,6 +6,7 @@ import { sign, verify } from "jsonwebtoken";
 import { LoginUserDto } from "../auth/dto/loginuser.dto";
 import { CreateUserDto } from "../auth/dto/createuser.dto";
 import { User } from './entity/user.entity';
+import { CreateUserVerfiyDto } from './dto/create_user_verify.dto';
 
 @Injectable()
 export class UserService {
@@ -14,17 +15,30 @@ export class UserService {
     private userRepository: Repository<User>,
   ) {}
 
-  async signUp(dto: CreateUserDto): Promise<User> {
-    dto.password = await bcrypt.hash(dto.password, 10);
-    const createdAt = new Date();
-    const createdUser = await this.userRepository.save({
-      email: dto.email,
-      name: dto.name,
-      password: dto.password,
-      photo: dto.photo,
-      createdAt: createdAt,
-    });
-    return createdUser;
+  async signUp(dto: CreateUserDto): Promise<CreateUserVerfiyDto> {
+    const isEmailExist = await this.userRepository.findOne({ where: { email: dto.email } });
+    const isKakaoEmailExist = await this.userRepository.findOne({ where: { kakao_email: dto.email } });
+    const isGoogleEmailExist = await this.userRepository.findOne({ where: { google_email: dto.email } });
+
+    if (!isEmailExist || !isKakaoEmailExist || !isGoogleEmailExist) {
+      dto.password = await bcrypt.hash(dto.password, 10);
+      const createdAt = new Date();
+      await this.userRepository.save({
+        email: dto.email,
+        name: dto.name,
+        password: dto.password,
+        createdAt: createdAt,
+      });
+      return ({
+        message: '해당 계정 생성에 성공했습니다.',
+        success: true
+      });
+    } else {
+      return ({
+        message: '해당 계정은 이미 생성되었습니다.',
+        success: false
+      });
+    }
   }
 
   async handleLogin(dto: LoginUserDto) {
@@ -41,10 +55,21 @@ export class UserService {
       if (isPassword === false) {
         throw new Error("이메일 혹은 패스워드를 찾을 수 없습니다.");
       }
-      const user = await this.findByEmail(dto.email);
-      const token = await this.login(user);
+      let user = await this.findByEmail(dto.email);
+      const User = {
+        email: user.email,
+        photo: user.photo,
+        name: user.name,
+        isLogined: true,
+        loginPlatform: 'ootd'
+      }
+      const token = await this.generateAccessToken(User);
       const accessToken = `Bearer ${token}`;
-      return accessToken;
+      return ({
+        message: '해당 계정 로그인에 성공했습니다.',
+        success: true,
+        accessToken
+      });
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
@@ -67,6 +92,14 @@ export class UserService {
 
   async findByEmail(email: string): Promise<User> {
     return await this.userRepository.findOne({ where: { email } });
+  }
+
+  async findByKakaoEmail(email: string): Promise<User> {
+    return await this.userRepository.findOne({ where: { kakao_email: email } });
+  }
+
+  async findByGoogleEmail(email: string): Promise<User> {
+    return await this.userRepository.findOne({ where: { google_email: email } });
   }
 
   async login(user: User): Promise<string> {

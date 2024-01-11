@@ -20,6 +20,8 @@ import { ReviewModule } from './review/review.module';
 import { ItemService } from './item/item.service';
 import { ItemController } from './item/item.controller';
 import { ItemModule } from './item/item.module';
+import { AuthController } from './member/auth/auth.controller';
+import { EmailService } from './member/email/email.service';
 
 
 @Module({
@@ -43,7 +45,7 @@ import { ItemModule } from './item/item.module';
     ReviewModule,
     ItemModule,
   ],
-  providers: [LikeService, CartService, SellerService, OrderService, ReviewService, ItemService],
-  controllers: [LikeController, CartController, SellerController, OrderController, ReviewController, ItemController],
+  providers: [LikeService, CartService, SellerService, OrderService, ReviewService, ItemService, EmailService],
+  controllers: [LikeController, CartController, SellerController, OrderController, ReviewController, ItemController, AuthController],
 })
 export class AppModule {}
