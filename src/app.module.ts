@@ -20,10 +20,9 @@ import { ReviewModule } from './review/review.module';
 import { ItemService } from './item/item.service';
 import { ItemController } from './item/item.controller';
 import { ItemModule } from './item/item.module';
-import { AuthController } from './member/auth/auth.controller';
+import { ImageModule } from './image/image.module';
 import { EmailService } from './member/email/email.service';
-
-
+import { AuthController } from './member/auth/auth.controller';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -44,6 +43,7 @@ import { EmailService } from './member/email/email.service';
     OrderModule,
     ReviewModule,
     ItemModule,
+    ImageModule,
   ],
   providers: [LikeService, CartService, SellerService, OrderService, ReviewService, ItemService, EmailService],
   controllers: [LikeController, CartController, SellerController, OrderController, ReviewController, ItemController, AuthController],

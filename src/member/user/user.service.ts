@@ -13,8 +13,7 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-  ) {}
-
+  ) { }
   async signUp(dto: CreateUserDto): Promise<CreateUserVerfiyDto> {
     const isEmailExist = await this.userRepository.findOne({ where: { email: dto.email } });
     const isKakaoEmailExist = await this.userRepository.findOne({ where: { kakao_email: dto.email } });
@@ -26,6 +25,7 @@ export class UserService {
       await this.userRepository.save({
         email: dto.email,
         name: dto.name,
+        photo: '/images/profile/default_image.jpeg',
         password: dto.password,
         createdAt: createdAt,
       });
@@ -178,6 +178,20 @@ export class UserService {
       where: { google_email: email },
     });
     return user;
+  }
+
+  async changeProfileUrl(email: string, url: string) {
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (user) {
+      await this.userRepository.update(user.u_id, { photo: `http://localhost:4000/uploads/${url}` });
+    } else {
+      throw new Error('User not found');
+    }
+  }
+
+  async getProfilePhotoPath(email: string) {
+    const user = await this.userRepository.findOne({ where: { email } })
+    return user.photo
   }
 
   async decodeToken(token: string) {
