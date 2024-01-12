@@ -21,17 +21,16 @@ import { CreateUserDto } from "../auth/dto/createuser.dto";
 @Controller()
 export class UserController {
   constructor(private readonly userService: UserService) {}
-
   @Post("login")
   async logIn(@Body() dto: LoginUserDto, @Res() res) {
     try {
-      const accessToken = await this.userService.handleLogin(dto);
-      res.cookie("Authorization", accessToken, {
+      const response = await this.userService.handleLogin(dto);
+      res.cookie("Authorization", response.accessToken, {
         httpOnly: false,
         secure: true,
         path: "/",
       });
-      res.status(201).send("localLogin ok");
+      res.status(201).send(response);
     } catch (error) {
       console.error("Error in localLogin:", error);
       res.status(500).send("Internal Server Error");

@@ -4,5 +4,10 @@
   "sourceRoot": "src",
   "compilerOptions": {
     "deleteOutDir": true
+  },
+  "modules": {
+    "serve-static": {
+      "source": "@nestjs/serve-static"
+    }
   }
 }
