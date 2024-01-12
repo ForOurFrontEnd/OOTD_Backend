@@ -18,4 +18,13 @@ export class ItemService {
             return "잘못된 요청입니다."
         }
     }
+
+    async categoryView(category:string) {
+        const item = await this.itemRepository.find({ where: { category } })
+        if (item) {
+            return item
+        } else {
+            return "잘못된 요청입니다."
+        }
+    }
 }

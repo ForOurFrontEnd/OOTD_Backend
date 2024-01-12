@@ -15,4 +15,11 @@ export class ItemController {
         const itemData = await this.itemService.itemView(item);
         res.send(itemData)
     }
+
+    @Get("categoryview")
+    async detailCategoryView(@Req() req, @Res() res) {
+        const {category} = req.query;
+        const itemData = await this.itemService.categoryView(category);
+        res.send(itemData)
+    }
 }
