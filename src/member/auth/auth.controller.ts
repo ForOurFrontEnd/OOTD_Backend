@@ -1,13 +1,16 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { EmailService } from '../email/email.service';
 import { UserService } from '../user/user.service';
+import { PhoneService } from '../phone/phone.service';
 
 @Controller('auth')
 export class AuthController {
   private verificationCodes: Record<string, { code: number; createdAt: Date }> = {};
+  private verificationPhoneCodes: Record<string, { code: number; createdAt: Date }> = {};
 
   constructor(
     private readonly emailService: EmailService,
+    private readonly phoneService: PhoneService,
     private readonly userService: UserService
   ) { }
 
@@ -35,7 +38,6 @@ export class AuthController {
         success: false,
       };
     }
-
   }
 
   @Post('verify-email')

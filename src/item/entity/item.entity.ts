@@ -10,16 +10,16 @@ export class Item {
   @PrimaryGeneratedColumn()
   i_id: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   brand: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   title: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   category: string;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 ,nullable: false})
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 ,nullable: true})
   price: number;
 
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 ,nullable: true})
@@ -28,10 +28,10 @@ export class Item {
   @Column({ type: 'int', default: 0})
   point: number;
 
-  @Column({ type: 'text', nullable: false })
+  @Column({ type: 'text', nullable: true })
   photo: string;
-  
-  @Column({ nullable: false })
+
+  @Column({ nullable: true })
   description: string;
 
   @ManyToOne(() => Seller, seller => seller.items)

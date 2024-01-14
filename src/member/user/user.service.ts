@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Connection, Repository } from "typeorm";
 import * as bcrypt from "bcrypt";
 import { sign, verify } from "jsonwebtoken";
 import { LoginUserDto } from "../auth/dto/loginuser.dto";
@@ -10,10 +10,12 @@ import { CreateUserVerfiyDto } from './dto/create_user_verify.dto';
 
 @Injectable()
 export class UserService {
+  
   constructor(
     @InjectRepository(User)
-    private userRepository: Repository<User>,
-  ) { }
+    private userRepository: Repository<User>
+  ){}
+  
   async signUp(dto: CreateUserDto): Promise<CreateUserVerfiyDto> {
     const isEmailExist = await this.userRepository.findOne({ where: { email: dto.email } });
     const isKakaoEmailExist = await this.userRepository.findOne({ where: { kakao_email: dto.email } });
@@ -192,6 +194,26 @@ export class UserService {
   async getProfilePhotoPath(email: string) {
     const user = await this.userRepository.findOne({ where: { email } })
     return user.photo
+  }
+
+  async getPoint(email: string) {
+    const user = await this.userRepository.findOne({ where: { email } })
+    return user.point
+  }
+
+  async getPhoneNumber(email: string) {
+    const user = await this.userRepository.findOne({ where: { email } })
+    return user.phone_number
+  }
+
+  async deleteUser(email: string): Promise<boolean> {
+    try {
+      const result = await this.userRepository.delete({ email });
+      return result.affected > 0; 
+    } catch (error) {
+      console.error(error.message);
+      return false;
+    }
   }
 
   async decodeToken(token: string) {
