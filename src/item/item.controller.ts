@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Header, Headers, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, Header, Headers, Post, Req, Res } from '@nestjs/common';
 import { UserService } from 'src/member/user/user.service';
 import { ItemService } from './item.service';
 
@@ -20,6 +20,15 @@ export class ItemController {
     async detailCategoryView(@Req() req, @Res() res) {
         const {category} = req.query;
         const itemData = await this.itemService.categoryView(category);
+        const page = Math.ceil(itemData.length / 20)
+        const categoryData = {item:itemData, page:page}
+        res.send(categoryData)
+    }
+
+    @Get("categorypage")
+    async categoryPage(@Req() req, @Res() res) {
+        const {category, page} = req.query;
+        const itemData = await this.itemService.categoryPage(category,page);
         res.send(itemData)
     }
 }

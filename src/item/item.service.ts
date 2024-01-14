@@ -27,4 +27,14 @@ export class ItemService {
             return "잘못된 요청입니다."
         }
     }
+
+    async categoryPage(category:string, page:number) {
+        const item = await this.itemRepository.find({ where: { category } })
+        if (item) {
+            const PageList = item.slice(0 + 20*page,20 + 20*page)
+            return PageList
+        } else {
+            return "잘못된 요청입니다."
+        }
+    }
 }
