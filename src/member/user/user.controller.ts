@@ -93,4 +93,35 @@ export class UserController {
       res.status(200).send(user)
     }
   }
+
+  @Get('point')
+  async getPoint(@Headers('cookie') cookie: string, @Res() res): Promise<any> {
+    if (cookie) {
+      const token = cookie.split('Authorization=Bearer%20')[1];
+      const user = await this.userService.decodeToken(token);
+      const point = await this.userService.getPoint(user.user.email)
+      const formattedPoint = point.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      res.status(200).send(formattedPoint)
+    }
+  }
+
+  @Get('phone_number')
+  async getPhoneNumber(@Headers('cookie') cookie: string, @Res() res): Promise<any> {
+    if (cookie) {
+      const token = cookie.split('Authorization=Bearer%20')[1];
+      const user = await this.userService.decodeToken(token);
+      const phoneNumber = await this.userService.getPhoneNumber(user.user.email)
+      res.status(200).send(phoneNumber)
+    }
+  }
+
+  @Post('withdrawal')
+  async deleteUser(@Headers('cookie') cookie: string, @Res() res): Promise<any> {
+    if (cookie) {
+      const token = cookie.split('Authorization=Bearer%20')[1];
+      const user = await this.userService.decodeToken(token);
+      await this.userService.deleteUser(user.user.email)
+      res.clearCookie("Authorization", { path: "/" });
+    }
+  }
 }

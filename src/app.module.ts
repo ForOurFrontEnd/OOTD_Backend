@@ -23,6 +23,7 @@ import { ItemModule } from './item/item.module';
 import { ImageModule } from './image/image.module';
 import { EmailService } from './member/email/email.service';
 import { AuthController } from './member/auth/auth.controller';
+import { PhoneService } from './member/phone/phone.service';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -45,7 +46,7 @@ import { AuthController } from './member/auth/auth.controller';
     ItemModule,
     ImageModule,
   ],
-  providers: [LikeService, CartService, SellerService, OrderService, ReviewService, ItemService, EmailService],
+  providers: [LikeService, CartService, SellerService, OrderService, ReviewService, ItemService, EmailService, PhoneService],
   controllers: [LikeController, CartController, SellerController, OrderController, ReviewController, ItemController, AuthController],
 })
 export class AppModule {}

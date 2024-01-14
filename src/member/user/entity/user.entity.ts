@@ -40,7 +40,7 @@ export class User extends BaseEntity {
   @Column({ nullable: true })
   phone_number: string;
   
-  @Column({ default: 0 })
+  @Column({ default: 1000 })
   point: number;
 
   @Column({ default: false })
