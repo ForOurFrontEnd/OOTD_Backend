@@ -6,7 +6,7 @@ import { sign, verify } from "jsonwebtoken";
 import { LoginUserDto } from "../auth/dto/loginuser.dto";
 import { CreateUserDto } from "../auth/dto/createuser.dto";
 import { User } from './entity/user.entity';
-import { CreateUserVerfiyDto } from './dto/create_user_verify.dto';
+import { UserResponseDto } from './dto/response/user_response.dto';
 
 @Injectable()
 export class UserService {
@@ -16,7 +16,7 @@ export class UserService {
     private userRepository: Repository<User>
   ){}
   
-  async signUp(dto: CreateUserDto): Promise<CreateUserVerfiyDto> {
+  async signUp(dto: CreateUserDto): Promise<UserResponseDto> {
     const isEmailExist = await this.userRepository.findOne({ where: { email: dto.email } });
     const isKakaoEmailExist = await this.userRepository.findOne({ where: { kakao_email: dto.email } });
     const isGoogleEmailExist = await this.userRepository.findOne({ where: { google_email: dto.email } });
@@ -33,12 +33,14 @@ export class UserService {
       });
       return ({
         message: '해당 계정 생성에 성공했습니다.',
-        success: true
+        success: true,
+        data:null
       });
     } else {
       return ({
         message: '해당 계정은 이미 생성되었습니다.',
-        success: false
+        success: false,
+        data:null
       });
     }
   }
@@ -197,8 +199,9 @@ export class UserService {
   }
 
   async getPoint(email: string) {
-    const user = await this.userRepository.findOne({ where: { email } })
-    return user.point
+    const user = await this.findByEmail(email)
+    const formattedPoint = await user.point
+    return formattedPoint
   }
 
   async getPhoneNumber(email: string) {
@@ -216,8 +219,38 @@ export class UserService {
     }
   }
 
-  async decodeToken(token: string) {
+  async updateUserName(email: string, newName: string): Promise<boolean> {
     try {
+      const userToUpdate = await this.findByEmail(email);
+
+      if (!userToUpdate) {
+        return false;
+      }
+      await this.userRepository.update(userToUpdate.u_id, { name: newName });
+      return true;
+    } catch (error) {
+      console.error("Error updating user name:", error);
+      return false;
+    }
+  }
+
+  async getName(email: string) {
+    try {
+      const user = await this.findByEmail(email)
+
+      if (!user) {
+        return false;
+      }
+      return user.name;
+    } catch (error) {
+      console.log("Error in get User's name", error);
+      return false;
+    }
+  }
+
+  async decodeToken(cookie: string) {
+    try {
+      const token = cookie.split('Authorization=Bearer%20')[1];
       const decodeToken = verify(
         token,
         process.env.ACCESS_TOKEN_PRIVATE_KEY
