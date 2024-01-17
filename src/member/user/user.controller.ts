@@ -1,18 +1,13 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
-  Header,
   Headers,
-  Param,
   Post,
-  Put,
   Req,
   Res,
   UseGuards,
 } from "@nestjs/common";
-import { sign } from "jsonwebtoken";
 import { AuthGuard } from "@nestjs/passport";
 import { UserService } from "./user.service";
 import { LoginUserDto } from "../auth/dto/loginuser.dto";
@@ -48,7 +43,7 @@ export class UserController {
         secure: true,
         path: "/",
       });
-      res.redirect("http://localhost:3000");
+      res.status(201).redirect("http://localhost:3000");
     } catch (error) {
       console.error("Error in googleLoginCallback:", error);
       res.status(500).send("Internal Server Error");
@@ -66,7 +61,7 @@ export class UserController {
         secure: true,
         path: "/",
       });
-      res.redirect("http://localhost:3000");
+      res.status(201).redirect("http://localhost:3000");
     } catch (error) {
       console.error("Error in kakaoLoginCallback:", error);
       res.status(500).send("Internal Server Error");
@@ -75,21 +70,19 @@ export class UserController {
 
   @Get("logout")
   async logout(@Res() res) {
-    res.clearCookie("Authorization", { path: "/" });
-    res.redirect("http://localhost:3000");
+    res.status(200).clearCookie("Authorization", { path: "/" });
   }
 
   @Post("signup")
   async createUser(@Body() dto: CreateUserDto, @Res() res) {
     const result = await this.userService.signUp(dto);
-    res.send(result);
+    res.status(200).send(result);
   }
 
   @Post('cookie')
   async decodeCookie(@Headers('cookie') cookie: string, @Res() res): Promise<any> {
     if (cookie) {
-      const token = cookie.split('Authorization=Bearer%20')[1];
-      const user = await this.userService.decodeToken(token);
+      const user = await this.userService.decodeToken(cookie);
       res.status(200).send(user)
     }
   }
@@ -97,8 +90,7 @@ export class UserController {
   @Get('point')
   async getPoint(@Headers('cookie') cookie: string, @Res() res): Promise<any> {
     if (cookie) {
-      const token = cookie.split('Authorization=Bearer%20')[1];
-      const user = await this.userService.decodeToken(token);
+      const user = await this.userService.decodeToken(cookie);
       const point = await this.userService.getPoint(user.user.email)
       const formattedPoint = point.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
       res.status(200).send(formattedPoint)
@@ -108,8 +100,7 @@ export class UserController {
   @Get('phone_number')
   async getPhoneNumber(@Headers('cookie') cookie: string, @Res() res): Promise<any> {
     if (cookie) {
-      const token = cookie.split('Authorization=Bearer%20')[1];
-      const user = await this.userService.decodeToken(token);
+      const user = await this.userService.decodeToken(cookie);
       const phoneNumber = await this.userService.getPhoneNumber(user.user.email)
       res.status(200).send(phoneNumber)
     }
@@ -118,10 +109,27 @@ export class UserController {
   @Post('withdrawal')
   async deleteUser(@Headers('cookie') cookie: string, @Res() res): Promise<any> {
     if (cookie) {
-      const token = cookie.split('Authorization=Bearer%20')[1];
-      const user = await this.userService.decodeToken(token);
+      const user = await this.userService.decodeToken(cookie);
       await this.userService.deleteUser(user.user.email)
       res.clearCookie("Authorization", { path: "/" });
+    }
+  }
+
+  @Post('update_name')
+  async updateName(@Headers('cookie') cookie: string, @Body('otherName') newName , @Res() res): Promise<any> {
+    if (cookie) {
+      const user = await this.userService.decodeToken(cookie);
+      await this.userService.updateUserName(user.user.email, newName)
+      res.status(200).send('success')
+    }
+  }
+
+  @Get('name')
+  async getName(@Headers('cookie') cookie: string, @Res() res): Promise<any> {
+    if (cookie) {
+      const user = await this.userService.decodeToken(cookie);
+      const name = await this.userService.getName(user.user.email)
+      res.status(200).send(name)
     }
   }
 }
