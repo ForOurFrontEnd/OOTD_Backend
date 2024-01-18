@@ -19,7 +19,6 @@ export class LikeService {
 
   async pushLikeButton(userId: string, itemId: number): Promise<any> {
     try {
-      // 사용자와 아이템 정보 조회
       const user = await this.userRepository.findOne({ where: { u_id: userId } });
       const item = await this.itemRepository.findOne({ where: { i_id: itemId } });
 
@@ -27,21 +26,21 @@ export class LikeService {
         throw new Error('사용자 또는 아이템을 찾을 수 없습니다.');
       }
 
-      // 이미 좋아요한 경우에 대한 처리
-      const existingLike = await this.likeRepository.findOne({ where:{ user, item} });
+      const existingLike = await this.likeRepository.findOne({ where: { user: { u_id: userId }, item: { i_id: itemId } } });
       if (existingLike) {
-        throw new Error('이미 좋아요한 아이템입니다.');
+        await this.likeRepository.remove(existingLike);
+        return {
+          message: '이미 좋아요한 아이템을 취소했습니다.',
+          success: true,
+        };
       }
 
-      // Like 엔티티 생성 및 설정
       const newLike = new Like();
       newLike.user = user;
       newLike.item = item;
 
-      // Like 엔티티 저장
       const savedLike = await this.likeRepository.save(newLike);
 
-      // 성공적으로 저장된 경우에 대한 응답이나 다른 처리를 수행
       return {
         message: '좋아요가 성공적으로 저장되었습니다.',
         success: true,
@@ -50,6 +49,38 @@ export class LikeService {
     } catch (error) {
       console.error("pushLikeButton Error:", error);
       throw new Error('좋아요 저장 중 오류가 발생했습니다.');
+    }
+  }
+
+  async findLikeItems(userId: string) {
+    const likes = await this.likeRepository.find({
+      where: { user: { u_id: userId } },
+      relations: ['item'],
+    });
+    const likedItems = likes.map(like => like.item);
+    return likedItems
+  }
+  
+  async pressUnLikeButton(userId: string, itemId: number) {
+    try {
+      const user = await this.userRepository.findOne({ where: { u_id: userId } });
+      const item = await this.itemRepository.findOne({ where: { i_id: itemId } });
+
+      if (!user || !item) {
+        throw new Error('사용자 또는 아이템을 찾을 수 없습니다.');
+      }
+
+      const existingLike = await this.likeRepository.findOne({ where: { user: { u_id: userId }, item: { i_id: itemId } } });
+      if (existingLike) {
+        await this.likeRepository.remove(existingLike);
+        return {
+          message: '해당 아이템의 좋아요를 취소했습니다.',
+          success: true,
+        };
+      }
+    } catch (error) {
+      console.error("pressUnLikeButton Error:", error);
+      throw new Error('좋아요 취소 중 오류가 발생했습니다.');
     }
   }
 }
