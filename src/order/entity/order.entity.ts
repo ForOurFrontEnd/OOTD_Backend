@@ -20,6 +20,12 @@ export class Order {
     default: OrderState.ORDERED,
   })
   state: OrderState;
+  
+  @Column({})
+  size:string;
+
+  @Column({})
+  quantity:number;
 
   @Column({ default: () => "CURRENT_TIMESTAMP" })
   createdAt: Date;

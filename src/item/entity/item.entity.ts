@@ -5,7 +5,7 @@ import { Review } from 'src/review/entity/review.entity';
 import { Seller } from 'src/seller/entity/seller.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, ManyToMany, JoinTable, Unique } from 'typeorm';
 
-@Entity()
+@Entity('item')
 export class Item {
   @PrimaryGeneratedColumn()
   i_id: number;
@@ -40,14 +40,12 @@ export class Item {
   @OneToMany(() => Review, review => review.item)
   reviews: Review[];
 
-  @ManyToMany(() => User, user => user.likes)
-  @JoinTable()
-  likedBy: User[];
+  @OneToMany(() => User, user => user.likes)
+  likes: User[];
 
   @OneToMany(() => Order, order => order.item)
   orders: Order[];
 
-  @ManyToMany(() => Cart, cart => cart.items)
-  @JoinTable()
-  carts: Cart[];
+  @OneToMany(() => Cart, cart => cart.item)
+  carts: Cart;
 }

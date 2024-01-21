@@ -45,8 +45,7 @@ export class ImageController {
     const fileName = req['fileName'];
     const bufferData: Buffer = req['bufferData'];
     if (cookie) {
-      const token = cookie.split('Authorization=Bearer%20')[1];
-      const user = await this.userService.decodeToken(token);
+      const user = await this.userService.decodeToken(cookie);
       const email = await user.user.email
 
       if (bufferData && fileName) {
