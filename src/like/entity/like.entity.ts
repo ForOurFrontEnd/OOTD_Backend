@@ -10,6 +10,6 @@ export class Like {
   @ManyToOne(() => User, user => user.likes)
   user: User;
 
-  @ManyToOne(() => Item, item => item.likedBy)
+  @ManyToOne(() => Item, item => item.likes)
   item: Item;
 }

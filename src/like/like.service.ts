@@ -83,4 +83,61 @@ export class LikeService {
       throw new Error('좋아요 취소 중 오류가 발생했습니다.');
     }
   }
+
+  async getItemIsLike(userId: string, iIds: number[]) {
+  
+    const user = await this.userRepository.findOne({ where: { u_id: userId } });
+
+    if (!user) {
+      throw new Error('사용자를 찾을 수 없습니다.');
+    }
+
+    const resultArray = [];
+
+    for (const iId of iIds) {
+      const item = await this.itemRepository.findOne({ where: { i_id: iId } });
+
+      if (!item) {
+        throw new Error(`아이템을 찾을 수 없습니다. (i_id: ${iId})`);
+      }
+
+      const existingLike = await this.likeRepository.findOne({ where: { user: { u_id: userId }, item: { i_id: iId } } });
+      const isLiked = existingLike !== null;
+      resultArray.push(isLiked ? 1 : 0);
+    }
+    
+    return {
+      message: '좋아요 여부 확인이 완료되었습니다.',
+      success: true,
+      results: resultArray,
+    };
+
+  }
+
+  async getThisItemLiked(userId: string, itemId: number) {
+    try {
+      const user = await this.userRepository.findOne({ where: { u_id: userId } });
+      
+      if (!user) {
+        throw new Error('사용자를 찾을 수 없습니다.');
+      }
+  
+      const item = await this.itemRepository.findOne({ where: { i_id: itemId } });
+  
+      if (!item) {
+        throw new Error('아이템을 찾을 수 없습니다.');
+      }
+  
+      const existingLike = await this.likeRepository.findOne({ where: { user: { u_id: userId }, item: { i_id: itemId } } });
+      const isLiked = existingLike !== null;
+  
+      return {
+        message: '좋아요 여부 확인이 완료되었습니다.',
+        success: true,
+        results: isLiked,
+      }
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
 }
