@@ -4,7 +4,18 @@ import { Cart } from './entity/cart.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/member/user/entity/user.entity';
 import { Item } from 'src/item/entity/item.entity';
-
+interface ItemArray {
+  c_id : number;
+  item:{
+    i_id: number;
+    photo: string;
+    category: string;
+    brand: string;
+    title: string;
+    discount: number;
+    price: number;
+  }
+}
 @Injectable()
 export class CartService {
   constructor(
@@ -15,7 +26,8 @@ export class CartService {
     @InjectRepository(Item)
     private itemRepository: Repository<Item>,
   ) { }
-    async pushCartButton(userId: string, itemId: number): Promise<any> {
+
+  async pushCartButton(userId: string, itemId: number): Promise<any> {
     try {
       const user = await this.userRepository.findOne({ where: { u_id: userId } });
       const item = await this.itemRepository.findOne({ where: { i_id: itemId } });
@@ -62,8 +74,6 @@ export class CartService {
       relations: ['item'], 
     });
 
-    console.log(existingCart)
-
     if (!existingCart) {
       return {
         message: '해당 유저의 장바구니에 상품이 없습니다.',
@@ -80,6 +90,63 @@ export class CartService {
   } catch (error) {
     console.error("getCartData Error:", error);
     throw new Error('장바구니 데이터 로드 중 오류가 발생했습니다.');
+  };
+
+  async deleteOneCartButton(userId: string, cartId: number): Promise<any> { 
+    try {
+      const user = await this.userRepository.findOne({ where: { u_id: userId } });
+      const item = await this.cartRepository.findOne({ where: { c_id: cartId } });
+
+      if (!user || !item) {
+        throw new Error('사용자 또는 아이템을 찾을 수 없습니다.');
+      }
+
+      const existingLike = await this.cartRepository.findOne({ where: { user: { u_id: userId }, c_id: cartId } });
+      if (existingLike) {
+        await this.cartRepository.remove(existingLike);
+        return {
+          message: '이미 들어가있는 장바구니',
+          success: true,
+        };
+      }
+
+      return {
+        message: '장바구니 상품이 성공적으로 삭제되었습니다.',
+        success: true,
+      };
+    } catch (error) {
+      console.error("pushLikeButton Error:", error);
+      throw new Error('장바구니 상품 삭제 중 오류가 발생했습니다.');
+    }
+  }
+  
+  async deleteChosenCartButton(userId: string, checkedCartItems: ItemArray[]): Promise<any> { 
+    try {
+      
+      const user = await this.userRepository.findOne({ where: { u_id: userId } });
+      if (!user) {
+        throw new Error('사용자 또는 아이템을 찾을 수 없습니다.');
+      }
+      const cartIdsToDelete = checkedCartItems.map((cart) => {
+        return cart.c_id
+      });
+
+      for (let i = 0; i < cartIdsToDelete.length; i++){
+        const existingCartItem = await this.cartRepository.findOne({ where: { user: {u_id:userId}, c_id: cartIdsToDelete[i] } });
+          if (existingCartItem) {
+            await this.cartRepository.remove(existingCartItem);
+        }
+      }
+
+
+      return {
+        message: '선택한 장바구니 상품이 성공적으로 삭제되었습니다.',
+        success: true,
+      };
+    } catch (error) {
+      console.error("pushLikeButton Error:", error);
+      throw new Error('장바구니 상품 삭제 중 오류가 발생했습니다.');
+    }
   }
 }
 
