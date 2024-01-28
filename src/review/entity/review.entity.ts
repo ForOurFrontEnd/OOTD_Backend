@@ -1,8 +1,9 @@
 import { Item } from 'src/item/entity/item.entity';
 import { User } from 'src/member/user/entity/user.entity';
-import { Entity, PrimaryGeneratedColumn, ManyToOne, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, ManyToOne, Column, Unique } from 'typeorm';
 
 @Entity()
+@Unique(["user", "item"])
 export class Review {
   @PrimaryGeneratedColumn()
   r_id: number;
