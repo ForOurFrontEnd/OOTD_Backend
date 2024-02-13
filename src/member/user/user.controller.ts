@@ -70,7 +70,9 @@ export class UserController {
 
   @Get("logout")
   async logout(@Res() res) {
-    res.status(200).clearCookie("Authorization", { path: "/" });
+    res
+      .clearCookie("Authorization", { path: "/" })
+      .redirect("http://localhost:3000");
   }
 
   @Post("signup")

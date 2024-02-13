@@ -14,6 +14,12 @@ export class Cart {
   @JoinColumn({ name: "itemIId" })
   item: Item;
 
+  @Column({})
+  size:string;
+
+  @Column({})
+  quantity:number;
+
   @Column({ default: () => "CURRENT_TIMESTAMP" })
   createdAt: Date;
 }

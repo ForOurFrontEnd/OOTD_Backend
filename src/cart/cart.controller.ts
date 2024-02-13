@@ -11,14 +11,14 @@ export class CartController {
   ) { }
 
   @Post('press')
-  async pressLikeButton(@Headers('cookie') cookie, @Res() res, @Body('itemId') itemId: number) {
+  async pressLikeButton(@Headers('cookie') cookie, @Res() res, @Body('itemId') itemId: number, @Body('itemSize') itemSize: string) {
     try {
       const decodeData = await this.userService.decodeToken(cookie);
       if (!decodeData) {
         throw new Error('유효한 사용자를 찾을 수 없습니다.');
       }
       const user = await this.userService.findByEmail(decodeData.user.email)
-      const result = await this.cartService.pushCartButton(user.u_id, itemId);
+      const result = await this.cartService.pushCartButton(user.u_id, itemId, itemSize);
       res.send(result);
     } catch (error) {
       console.error("pressLikeButton Error:", error);
