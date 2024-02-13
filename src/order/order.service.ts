@@ -82,6 +82,14 @@ export class OrderService {
         return cartArray
     }
 
+    async getItem(item:number, user:string){
+        const cart = await this.cartRepository.find({where:{user:{u_id:user},item:{i_id:item}}, relations: ['item']})
+        const itemCart = cart.reduce((maxCart, currentCart) => {
+            return currentCart.c_id > maxCart.c_id ? currentCart : maxCart;
+          }, cart[0]);
+        return [itemCart]
+    }
+
     async pushCartButton(userId: string, itemId: number): Promise<any> {
         try {
             const user = await this.userRepository.findOne({ where: { u_id: userId } });
