@@ -27,7 +27,7 @@ export class CartService {
     private itemRepository: Repository<Item>,
   ) { }
 
-  async pushCartButton(userId: string, itemId: number): Promise<any> {
+  async pushCartButton(userId: string, itemId: number, itemSize: string): Promise<any> {
     try {
       const user = await this.userRepository.findOne({ where: { u_id: userId } });
       const item = await this.itemRepository.findOne({ where: { i_id: itemId } });
@@ -36,18 +36,11 @@ export class CartService {
         throw new Error('사용자 또는 아이템을 찾을 수 없습니다.');
       }
 
-      const existingLike = await this.cartRepository.findOne({ where: { user: { u_id: userId }, item: { i_id: itemId } } });
-      if (existingLike) {
-        await this.cartRepository.remove(existingLike);
-        return {
-          message: '이미 들어가있는 장바구니',
-          success: true,
-        };
-      }
-
       const newCart = new Cart();
       newCart.user = user;
       newCart.item = item;
+      newCart.size = itemSize
+      newCart.quantity = 1
 
       const savedCart = await this.cartRepository.save(newCart);
 
