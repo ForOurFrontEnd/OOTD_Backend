@@ -141,5 +141,26 @@ export class CartService {
       throw new Error('장바구니 상품 삭제 중 오류가 발생했습니다.');
     }
   }
+
+  async changeSizeCart(userId: string, cartId: number ,itemSize: string): Promise<any> {
+    try {
+      
+      const cartItem = await this.cartRepository.findOne({ where: {user: { u_id: userId }, c_id: cartId} });
+      if (!cartItem) {
+        throw new Error('사용자 또는 아이템을 찾을 수 없습니다.');
+      }
+
+      cartItem.size = itemSize;
+      await this.cartRepository.save(cartItem);
+    
+      return {
+        message: '선택한 장바구니 상품이 성공적으로 삭제되었습니다.',
+        success: true,
+      };
+    } catch (error) {
+      console.error("pushLikeButton Error:", error);
+      throw new Error('장바구니 상품 삭제 중 오류가 발생했습니다.');
+    }
+  }
 }
 
