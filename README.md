@@ -1,73 +1,64 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# OOTD - Nest.js 쇼핑 몰
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## 개요
+OOTD는 Nest.js 프레임워크를 사용하여 구축된 현대적이고 세련된 전자 상거래 플랫폼입니다. 깔끔한 디자인과 견고한 기능을 갖춘 사용자에게 매끄럽고 즐거운 쇼핑 경험을 제공합니다.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 특징
+- **반응형 디자인:** OOTD는 반응형으로 설계되어 다양한 디바이스와 화면 크기에서 일관된 시각적으로 매력적인 경험을 제공합니다.
+- **제품 카탈로그:** 다양한 제품의 카탈로그를 검색하고 각 제품에는 상세한 정보, 이미지 및 가격이 제공됩니다.
+- **사용자 인증:** 계정을 만들고 로그인하여 개인화된 쇼핑 경험을 즐기세요. 안전한 사용자 인증을 통해 사용자에게 안전한 환경을 제공합니다.
+- **장바구니:** 제품을 장바구니에 추가하고 결제 전에 선택한 항목과 수량을 관리하세요. 장바구니는 선택한 상품 및 수량을 추적합니다.
+- **찜:** 제품을 사용자의 기호에 맞도록 찜기능이 추가되었습니다 기호에 맞게 편한 쇼핑이 가능합니다.
+- **주문 관리:** 주문 내역을 보고 관리하며 배송을 추적하고 구매 상태를 업데이트하세요.
+- **검색 기능:** 검색 기능을 사용하여 사용자가 원하는 상품을 빠르게 찾을 수 있습니다.
 
-## Description
+## 사용된 기술
+- **Nest.js:** 프로젝트는 Nest.js를 기반으로 구축되어 서버 측 렌더링과 라우팅에 효율적인 node 프레임워크를 제공합니다.
+- **TypeScript:** OOTD는 TypeScript를 사용하여 코드의 유지 관리성, 가독성 및 전반적인 개발 생산성을 향상시킵니다.
+- **RESTful API:** 효율적인 데이터 가져오기와 더 유연한 API 구조를 위해 RESTful API을 활용합니다.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 핵심 OOTD 개발 설명
 
-## Installation
+### 프로젝트 리더(PR)
+- 'ju-jh' === '주재훈'
 
-```bash
-$ yarn install
-```
+### 프로젝트 참여자
+- 'ju-jh' === '주재훈'
+- 'lkw9' === '이기웅'
 
-## Running the app
+### 개발 기간
+- 2023.12.28 ~ 
 
-```bash
-# development
-$ yarn run start
+### 빌드
+- 환경: node.js 
+- 패키지 매니저: yarn
+- 빌드 명령어: yarn run build (Next.js)
+- 실행 명령어: yarn run start (Next.js)
+- 프로젝트 버전: {
+    "node": "21.4.0",
+    "next": "14.0.4",
+    "react": "^18.2.0",
+    "react-dom": "^18",
+  }
 
-# watch mode
-$ yarn run start:dev
+### 실행 방법
+- 프론트엔드 서버는 localhost:3000에서 실행됩니다.
 
-# production mode
-$ yarn run start:prod
-```
+### 프로젝트 개발 규칙
+- 푸시할 때 풀 리퀘스트를 사용하십시오. 리포지토리는 푸시를 위한 풀 리퀘스트를 강제합니다.
+- 깃 푸시 권한은 'ju-jh'에 의해 관리되며 서버 측 및 클라이언트 측 구성 요소를 명확히 분리하여 개발합니다.
+- 'use client'를 사용할 때 'ju-jh'에게 알려주세요.
 
-## Test
+### 프로젝트 진행 중 주의할 점
+- .env 파일은 관리자가 관리하며 외부에 노출되지 않도록 gitignore로 관리됩니다.
+- CSS 파일 대신 tailwindcss를 선호합니다.
+- 각 페이지의 주요 CSS는 globals.css에 정의되어 있습니다. 정해진 globals.css를 수정하지 마세요.
+- loginState, darkModeState, modalState는 context api로 작성되어있습니다. (충돌주의)
 
-```bash
-# unit tests
-$ yarn run test
+## 개발과정 중 직면한 문제점
+## 사용된 기술
+- **Nest.js:** 프로젝트는 Nest.js를 기반으로 구축되어 서버 측 렌더링과 라우팅에 효율적인 node 프레임워크를 제공합니다.
+- **TypeScript:** OOTD는 TypeScript를 사용하여 코드의 유지 관리성, 가독성 및 전반적인 개발 생산성을 향상시킵니다.
+- **RESTful API:** 효율적인 데이터 가져오기와 더 유연한 API 구조를 위해 RESTful API을 활용합니다.
 
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+## 발생한 문제점을 해결한 방법
