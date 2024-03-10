@@ -51,9 +51,6 @@ OOTD는 Nest.js 프레임워크를 사용하여 구축된 현대적이고 세련
 
 ### 프로젝트 진행 중 주의할 점
 - .env 파일은 관리자가 관리하며 외부에 노출되지 않도록 gitignore로 관리됩니다.
-- CSS 파일 대신 tailwindcss를 선호합니다.
-- 각 페이지의 주요 CSS는 globals.css에 정의되어 있습니다. 정해진 globals.css를 수정하지 마세요.
-- loginState, darkModeState, modalState는 context api로 작성되어있습니다. (충돌주의)
 
 ## 개발과정 중 직면한 문제점
 ## 사용된 기술
