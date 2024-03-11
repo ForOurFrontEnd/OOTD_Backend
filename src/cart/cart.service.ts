@@ -63,7 +63,7 @@ export class CartService {
     }
 
     const existingCart = await this.cartRepository.find({
-      where: { user: { u_id: userId } },
+      where: { user: { u_id: userId }, isOrdered: false },
       relations: ['item'], 
     });
 
@@ -154,12 +154,36 @@ export class CartService {
       await this.cartRepository.save(cartItem);
     
       return {
-        message: '선택한 장바구니 상품이 성공적으로 삭제되었습니다.',
+        message: '선택한 장바구니 상품의 사이즈가 성공적으로 변경되었습니다.',
         success: true,
       };
     } catch (error) {
       console.error("pushLikeButton Error:", error);
-      throw new Error('장바구니 상품 삭제 중 오류가 발생했습니다.');
+      throw new Error('장바구니 상품 사이즈 변경 중 오류가 발생했습니다.');
+    }
+  }
+  
+  async changeQuantityCart(userId: string, cartId: number ,itemQuantity: string): Promise<any> {
+    try {
+      const cartItem = await this.cartRepository.findOne({ where: {user: { u_id: userId }, c_id: cartId} });
+      if (!cartItem) {
+        throw new Error('사용자 또는 아이템을 찾을 수 없습니다.');
+      }
+
+      if (itemQuantity === '+') {
+        cartItem.quantity++;
+      } else if (itemQuantity === '-' && cartItem.quantity !== 1) {
+        cartItem.quantity--;
+      }
+      await this.cartRepository.save(cartItem);
+    
+      return {
+        message: '선택한 장바구니 상품의 수량이 성공적으로 변경되었습니다.',
+        success: true,
+      };
+    } catch (error) {
+      console.error("pushLikeButton Error:", error);
+      throw new Error('장바구니 상품 수량 변경 중 오류가 발생했습니다.');
     }
   }
 }
