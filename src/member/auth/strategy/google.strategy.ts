@@ -41,8 +41,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
         name,
         isAutoLogin
       );
-
-      const payload = { email: user.email, photo: user.photo, name: user.name, isLogined: true, loginPlatform: 'google' };
+      const generatedPlatform = await this.userService.findGeneratedPlatform(email)
+      const payload = { email: user.email, photo: user.photo, name: user.name, isLogined: true, loginPlatform: 'google', generatedPlatform };
       done(null, payload);
     } catch (error) {
       done(error, false);

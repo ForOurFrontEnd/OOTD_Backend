@@ -35,7 +35,8 @@ export class KakaoStrategy extends PassportStrategy(Strategy, "kakao") {
         isAutoLogin
       );
 
-      const payload = { user: { email: user.email, photo: user.photo, name: user.name, isLogined: true, loginPlatform: 'kakao' }};
+      const generatedPlatform = await this.userService.findGeneratedPlatform(email)
+      const payload = { user: { email: user.email, photo: user.photo, name: user.name, isLogined: true, loginPlatform: 'kakao', generatedPlatform }};
       done(null, payload);
     } catch (error) {
       done(error, false);
