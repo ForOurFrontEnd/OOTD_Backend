@@ -7,6 +7,7 @@ import { LoginUserDto } from "../auth/dto/loginuser.dto";
 import { CreateUserDto } from "../auth/dto/createuser.dto";
 import { User } from './entity/user.entity';
 import { UserResponseDto } from './dto/response/user_response.dto';
+import { isUint16Array } from 'util/types';
 
 @Injectable()
 export class UserService {
@@ -14,7 +15,7 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>
-  ){}
+  ) { }
   
   async signUp(dto: CreateUserDto): Promise<UserResponseDto> {
     const isEmailExist = await this.userRepository.findOne({ where: { email: dto.email } });
@@ -34,13 +35,13 @@ export class UserService {
       return ({
         message: '해당 계정 생성에 성공했습니다.',
         success: true,
-        data:null
+        data: null
       });
     } else {
       return ({
         message: '해당 계정은 이미 생성되었습니다.',
         success: false,
-        data:null
+        data: null
       });
     }
   }
@@ -60,12 +61,15 @@ export class UserService {
         throw new Error("이메일 혹은 패스워드를 찾을 수 없습니다.");
       }
       let user = await this.findByEmail(dto.email);
+      const generatedPlatform = await this.findGeneratedPlatform(dto.email)
+
       const User = {
         email: user.email,
         photo: user.photo,
         name: user.name,
         isLogined: true,
-        loginPlatform: 'ootd'
+        loginPlatform: 'ootd',
+        generatedPlatform
       }
       const token = await this.generateAccessToken(User);
       const accessToken = `Bearer ${token}`;
@@ -106,10 +110,11 @@ export class UserService {
     return await this.userRepository.findOne({ where: { google_email: email } });
   }
 
-  async login(user: User): Promise<string> {
-    const payload = { user: { email: user.email }, type: "buyer" };
-    const accesstoken = this.generateAccessToken(payload);
-    return accesstoken;
+  async generateAccessTokenGoogle(user: any): Promise<string> {
+    const secretKey = process.env.ACCESS_TOKEN_PRIVATE_KEY;
+    const expiresIn = "24h";
+    const accessToken = sign({ user }, secretKey, { expiresIn });
+    return accessToken;
   }
 
   async generateAccessToken(user: any): Promise<string> {
@@ -118,6 +123,13 @@ export class UserService {
     const accessToken = sign({ user }, secretKey, { expiresIn });
     return accessToken;
   }
+
+  async findGeneratedPlatform(email: string){
+    const user = await this.getOOTDUser(email);
+    const data = [{ ootd: user.email }, { kakao: user.kakao_email }, { google: user.google_email }]
+    return data
+  }
+
 
   async findByEmailOrSave(email, photo, name, isAutoLogin): Promise<User> {
     const isUser = await this.getOOTDUser(email);

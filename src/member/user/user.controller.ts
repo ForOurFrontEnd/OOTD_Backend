@@ -52,7 +52,7 @@ export class UserController {
 
   @Get("kakao/callback")
   @UseGuards(AuthGuard("kakao"))
-  async kakaoLoginCallback(@Req() req, @Res() res) {
+  async kakaoLoginCallback(@Headers('cookie') cookie: string, @Req() req, @Res() res) {
     try {
       const token = await this.userService.generateAccessToken(req.user.user);
       const accessToken = `Bearer ${token}`;

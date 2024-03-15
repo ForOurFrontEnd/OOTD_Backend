@@ -18,7 +18,10 @@ export class Cart {
   size:string;
 
   @Column({})
-  quantity:number;
+  quantity: number;
+  
+  @Column({ type: 'boolean', default: false})
+  isOrdered: boolean;
 
   @Column({ default: () => "CURRENT_TIMESTAMP" })
   createdAt: Date;
