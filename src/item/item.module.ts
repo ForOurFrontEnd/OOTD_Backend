@@ -5,11 +5,13 @@ import { ItemController } from './item.controller';
 import { ItemService } from './item.service';
 import { UserService } from 'src/member/user/user.service';
 import { UserModule } from 'src/member/user/user.module';
+import { LikeModule } from 'src/like/like.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Item]),
-    UserModule
+    UserModule,
+    LikeModule
   ],
   controllers: [ItemController],
   providers: [ItemService,UserService],
