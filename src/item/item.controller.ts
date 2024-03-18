@@ -8,6 +8,23 @@ export class ItemController {
         private readonly userService: UserService,
         private readonly itemService: ItemService
     ) { }
+    @Get('ranks')
+    async getItmesRank(@Res() res) {
+        const rankData = await this.itemService.itemPopularRank()
+        res.send(rankData)
+    }
+
+    @Get('discounts')
+    async getDiscountItemRank(@Res() res) {
+        const rankData = await this.itemService.itemDiscountRank()
+        res.send(rankData)
+    }
+
+    @Get('points')
+    async getPointItemRank(@Res() res) {
+        const rankData = await this.itemService.itemPointRank()
+        res.send(rankData)
+    }
 
     @Get("view")
     async detailView(@Req() req, @Res() res) {
