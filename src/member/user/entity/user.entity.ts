@@ -39,6 +39,12 @@ export class User extends BaseEntity {
   @Column({ nullable: true })
   phone_number: string;
   
+  @Column({ nullable: true })
+  address: string;
+
+  @Column({ nullable: true })
+  detailAddress: string;
+
   @Column({ default: 1000 })
   point: number;
 

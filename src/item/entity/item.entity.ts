@@ -43,8 +43,8 @@ export class Item {
   @OneToMany(() => User, user => user.likes)
   likes: User[];
 
-  @OneToMany(() => Order, order => order.item)
-  orders: Order[];
+  // @OneToMany(() => Order, order => order.item)
+  // orders: Order[];
 
   @OneToMany(() => Cart, cart => cart.item)
   carts: Cart;
