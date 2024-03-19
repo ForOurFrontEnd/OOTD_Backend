@@ -1,7 +1,7 @@
-import { Item } from 'src/item/entity/item.entity';
 import { User } from 'src/member/user/entity/user.entity';
-import { Entity, PrimaryGeneratedColumn, ManyToOne, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, ManyToOne, Column, OneToMany } from 'typeorm';
 import { OrderState } from './order-state.enum';
+import { Cart } from 'src/cart/entity/cart.entity';
 
 @Entity()
 export class Order {
@@ -11,21 +11,15 @@ export class Order {
   @ManyToOne(() => User, user => user.orders)
   user: User;
 
-  @ManyToOne(() => Item, item => item.orders)
-  item: Item;
-
   @Column({
     type: 'enum',
     enum: OrderState,
     default: OrderState.ORDERED,
   })
   state: OrderState;
-  
-  @Column({})
-  size:string;
 
-  @Column({})
-  quantity:number;
+  @Column('integer', { array: true, default: [] })
+  cartArray: number[];
 
   @Column({ default: () => "CURRENT_TIMESTAMP" })
   createdAt: Date;
